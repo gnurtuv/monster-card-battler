@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monster Card Battler</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Start Menu Overlay -->
+    <div id="start-menu" class="menu-overlay">
+        <div class="menu-box">
+            <h1>Monster Card Battler</h1>
+            <p>Generated monsters, endless possibilities!</p>
+            <button id="start-game-button">Start Game</button>
+        </div>
+    </div>
+
+    <!-- Game Over Menu Overlay -->
+     <div id="game-over-menu" class="menu-overlay" style="display: none;">
+        <div class="menu-box">
+            <h2 id="game-over-message">Game Over</h2>
+            <button id="play-again-button">Play Again</button>
+        </div>
+    </div>
+
+    <!-- Main Game Container -->
+    <div id="game-container" style="display: none;">
+
+        <!-- Opponent Area -->
+        <div id="opponent-area" class="player-area">
+            <div class="player-info">
+                <div>
+                    <span>Opponent HP: <span id="opponent-hp">30</span></span>
+                    <span>Mana: <span id="opponent-mana">0</span>/<span id="opponent-max-mana">0</span></span>
+                </div>
+                <div>
+                    <span class="deck-info">Deck: <span id="opponent-deck-count">0</span></span>
+                    <button class="graveyard-button" id="opponent-graveyard-btn">Grave: <span id="opponent-grave-count">0</span></button>
+                </div>
+            </div>
+            <div id="opponent-hand" class="hand">
+                 <span class="card-count-label">Hand: <span id="opponent-hand-count">0</span></span>
+            </div>
+            <div id="opponent-grid" class="battle-grid">
+            </div>
+        </div>
+
+        <hr class="battle-divider">
+
+        <!-- Player Area -->
+        <div id="player-area" class="player-area">
+             <div id="player-grid" class="battle-grid">
+            </div>
+            <div id="player-hand" class="hand">
+                 <span class="card-count-label">Hand: <span id="player-hand-count">0</span></span>
+            </div>
+            <div class="player-info">
+                 <div>
+                    <span>Player HP: <span id="player-hp">30</span></span>
+                    <span>Mana: <span id="player-mana">1</span>/<span id="player-max-mana">1</span></span>
+                </div>
+                 <div>
+                    <span class="deck-info">Deck: <span id="player-deck-count">0</span></span>
+                    <button class="graveyard-button" id="player-graveyard-btn">Grave: <span id="player-grave-count">0</span></button>
+                 </div>
+                <button id="end-turn-button" disabled>End Turn</button>
+            </div>
+        </div>
+
+        <!-- Message Area -->
+        <div id="message-area" style="display: none;"></div>
+
+        <!-- Graveyard Modal (Initially Hidden) -->
+        <div id="graveyard-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-button" id="close-graveyard-modal">×</span>
+                <h3 id="graveyard-title">Graveyard</h3>
+                <div id="graveyard-cards" class="hand graveyard-display">
+                    <!-- Graveyard cards will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Link JavaScript Files -->
+    <script src="js/monsterGenerator.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js" defer></script>
+</body>
+</html>

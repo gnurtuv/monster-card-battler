@@ -1,0 +1,529 @@
+/* Basic Reset & Body */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: sans-serif; background-color: #f0f0f0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+#game-container { width: 100%; max-width: 1200px; height: 95vh; background-color: #e0e0e0; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; padding: 10px; position: relative; margin: auto; overflow: hidden; }
+
+/* Player Areas */
+.player-area { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 5px; overflow: hidden; }
+#opponent-area { order: 1; }
+.battle-divider { width: 95%; margin: 5px auto; border-style: dashed; order: 2; flex-shrink: 0; }
+#player-area { order: 3; }
+
+/* Player Info */
+.player-info { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background-color: #d0d0d0; border-radius: 4px; font-size: 0.9em; flex-shrink: 0; position: relative; }
+#opponent-area .player-info { margin-bottom: 5px; order: 1;}
+#opponent-area .hand { order: 2; height: 115px; }
+#opponent-area .battle-grid { order: 3; flex-grow: 1; }
+#player-area .battle-grid { order: 1; flex-grow: 1; }
+#player-area .hand { order: 2; height: 115px; }
+#player-area .player-info { margin-top: 5px; order: 3;}
+
+/* Hand Styling */
+.hand { display: flex; align-items: center; padding: 5px; gap: 5px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; flex-shrink: 0; width: 100%; background-color: #c8c8c8; border-radius: 4px; }
+.card.card-back { background-color: #666; background-image: repeating-linear-gradient( 45deg, #777, #777 10px, #666 10px, #666 20px ); color: transparent; border: 1px solid #444; cursor: default; }
+.card.card-back > * { display: none; }
+
+/* Battle Grid */
+.battle-grid { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: 1fr; gap: 8px; padding: 8px; background-color: #b8b8b8; border-radius: 4px; margin: 5px 0; min-height: 120px; overflow: hidden; }
+.grid-slot { background-color: #a0a0a0; border: 1px dashed #888; border-radius: 4px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; min-width: 80px; min-height: 100px; }
+
+/* Base Card Style */
+.card { border: 1px solid #333; border-radius: 8px; background-color: #fff; width: 80px; height: 105px; padding: 5px; display: flex; justify-content: space-between; font-size: 0.75em; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, border-color 0.2s ease; user-select: none; position: relative; flex-shrink: 0; overflow: hidden; }
+
+/* Default Layout (Hand Card - Vertical) */
+.card:not(.on-grid) { flex-direction: column; }
+.card:not(.on-grid) .card-header { display: flex; justify-content: space-between; flex-shrink: 0; height: 18%; align-items: center; }
+.card:not(.on-grid) .card-name { font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 3px; }
+.card:not(.on-grid) .card-cost { font-weight: bold; background-color: cyan; border: 1px solid #00aaaa; border-radius: 50%; padding: 2px 4px; min-width: 16px; text-align: center; line-height: 1; flex-shrink: 0; }
+.card:not(.on-grid) .card-art { height: 42%; display: flex; justify-content: center; align-items: center; font-size: 0.8em; color: #666; overflow: hidden; flex-shrink: 0; margin: 2px 0; border: 1px solid #ccc; position:relative; }
+.card:not(.on-grid) .card-stats { display: flex; justify-content: space-between; font-weight: bold; flex-shrink: 0; height: 15%; align-items: center; padding: 0 5px; }
+.card:not(.on-grid) .card-atk { color: red; }
+.card:not(.on-grid) .card-hp { color: green; }
+.card:not(.on-grid) .card-ability { font-size: 0.65em; line-height: 1.2; flex-shrink: 0; height: 25%; border-top: 1px solid #eee; padding-top: 2px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.card:not(.on-grid) .card-info-column, .card:not(.on-grid) .card-header-grid { display: none; }
+
+/* Grid Card Layout Override */
+.card.on-grid { flex-direction: row; width: 95%; height: 95%; padding: 2px; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease; cursor: default; }
+.card.on-grid .card-art { width: 50%; height: 100%; flex-shrink: 0; display: flex; justify-content: center; align-items: center; font-size: 0.7em; color: #555; border-radius: 3px 0 0 3px; margin-right: 2px; overflow: hidden; border: none; position:relative; }
+.card.on-grid .card-info-column { width: 50%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.8em; overflow: hidden; }
+.card.on-grid .card-header-grid { display: flex; justify-content: center; align-items: center; padding-top: 1px; text-align: center; height: 40%; overflow: hidden; }
+.card.on-grid .card-name { font-weight: bold; white-space: normal; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-size: 0.85em; line-height: 1.1; }
+.card.on-grid .card-stats { display: flex; justify-content: space-around; align-items: center; font-weight: bold; font-size: 1.2em; height: 55%; border: none; padding: 0; }
+.card.on-grid .card-atk { color: red; }
+.card.on-grid .card-hp { color: green; }
+.card.on-grid .card-ability { display: none; height: 0; }
+
+/* Canvas Styling */
+.card-art { position: relative; overflow: hidden; background-color: #eee; }
+.card.on-grid .card-art { background-color: #ddd; }
+.generated-art-canvas { display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+
+/* Element Colors */
+.card[data-element="Fire"] { background-color: #ffdddd; border-color: #ffaaaa; }
+.card[data-element="Water"] { background-color: #ddddff; border-color: #aaaaff; }
+.card[data-element="Earth"] { background-color: #ddffdd; border-color: #aaffaa; }
+.card[data-element="Neutral"] { background-color: #f5f5f5; border-color: #cccccc; }
+.card.on-grid[data-element="Fire"] { background-color: #fff0f0; border-color: #ffcccc; }
+.card.on-grid[data-element="Water"] { background-color: #f0f0ff; border-color: #ccccff; }
+.card.on-grid[data-element="Earth"] { background-color: #f0fff0; border-color: #ccffcc; }
+.card.on-grid[data-element="Neutral"] { background-color: #fafafa; border-color: #dddddd; }
+
+/* Card State Indicators */
+.card.selected { box-shadow: 0 0 0 3px dodgerblue; transform: scale(1.05) translateY(-3px); z-index: 10; }
+.card.selected-attacker { box-shadow: 0 0 0 3px orangered; transform: scale(1.03); z-index: 10; cursor: default; }
+.card.on-grid.can-attack { cursor: pointer; }
+.card.on-grid.cannot-attack { opacity: 0.6; cursor: not-allowed; }
+.card.on-grid.damaged .card-hp { color: darkorange !important; font-weight: bold; }
+.card:not(.on-grid).playable { border: 2px solid gold; box-shadow: 0 0 8px gold; }
+
+/* Grid Slot Highlighting */
+.grid-slot.valid-summon-target { background-color: #90ee90aa; border: 2px solid green; cursor: pointer; }
+.grid-slot.valid-attack-target { outline: 3px solid #ff0000aa; outline-offset: -3px; cursor: crosshair; border-radius: 4px; background-color: rgba(255, 0, 0, 0.1); }
+.grid-slot.valid-attack-target .card { cursor: crosshair; }
+
+/* Hover Effects */
+.card:not(.on-grid):not(.selected):not(.card-back):hover { transform: translateY(-5px) scale(1.05); box-shadow: 3px 3px 8px rgba(0,0,0,0.3); z-index: 5; }
+.card.on-grid.can-attack:not(.selected-attacker):hover { transform: scale(1.03); box-shadow: 2px 2px 5px rgba(0,0,0,0.3); z-index: 5; }
+.card.selected-attacker:hover { box-shadow: 0 0 0 3px orangered, 2px 2px 5px rgba(0,0,0,0.3); }
+.card.selected:hover { box-shadow: 0 0 0 3px dodgerblue, 3px 3px 8px rgba(0,0,0,0.3); transform: scale(1.05) translateY(-3px); }
+
+/* Turn Button */
+#end-turn-button { padding: 5px 10px; cursor: pointer; border: 1px solid #888; background-color: #eee; border-radius: 4px; font-weight: bold; transition: background-color 0.2s ease; }
+#end-turn-button:not(:disabled):hover { background-color: #ddd; }
+#end-turn-button:disabled { cursor: not-allowed; opacity: 0.6; background-color: #f8f8f8; }
+
+/* Message Area */
+#message-area { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background-color: rgba(0, 0, 0, 0.75); color: white; padding: 8px 18px; border-radius: 20px; font-size: 0.9em; z-index: 100; transition: opacity 0.3s ease-in-out; text-align: center; max-width: 80%; display: none; opacity: 0; }
+
+/* Hero Target Highlighting */
+#opponent-hp.valid-hero-target { outline: 3px solid #ff0000aa; border-radius: 4px; background-color: rgba(255, 0, 0, 0.1); padding: 1px 3px; margin: -1px -3px; cursor: crosshair; transition: background-color 0.2s ease, outline 0.2s ease; }
+#opponent-area .player-info.valid-hero-target-area { cursor: crosshair; }
+
+/* --- Visual Polish Additions --- */
+/* Damage Numbers */
+.damage-number {
+    position: absolute;
+    transform: translate(-50%, 0); /* Start centered horizontally */
+    padding: 2px 6px;
+    border-radius: 10px;
+    background-color: rgba(255, 0, 0, 0.85); /* Damage red */
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px black;
+    z-index: 150;
+    pointer-events: none;
+    /* Animation handled by JS setting style */
+    transition: transform 1s cubic-bezier(0.1, 0.8, 0.2, 1), opacity 1s ease-out;
+    white-space: nowrap;
+    opacity: 1; /* Start visible */
+}
+.damage-number.healing {
+    background-color: rgba(0, 200, 0, 0.85); /* Healing green */
+}
+
+/* Ability Trigger Flash */
+.card.ability-trigger-flash {
+    animation: ability-flash 0.5s ease-out;
+}
+
+@keyframes ability-flash {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(0,0,0,0.2); /* Default shadow */
+        /* Reset specific state glows if needed, or rely on base styles */
+    }
+    50% {
+        box-shadow: 0 0 15px 5px yellow; /* Bright yellow flash */
+        transform: scale(1.05); /* Slight pulse */
+    }
+}
+
+/* Card entering hand animation */
+.card.entering-hand {
+    opacity: 0;
+    transform: translateY(30px) scale(0.8); /* Start slightly down and smaller */
+    animation: card-enter-hand 0.4s ease-out forwards;
+    /* Position absolutely initially? Handled by JS maybe */
+}
+
+@keyframes card-enter-hand {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Defeat Animation */
+.card.defeated {
+    animation: defeat-animation 0.5s ease-out forwards;
+    pointer-events: none; /* Ignore clicks while defeating */
+    z-index: 5; /* Ensure it's below floating damage numbers if any overlap */
+}
+
+/* --- UI/UX Refinements --- */
+
+/* Card Counts */
+.deck-info, .graveyard-button {
+    margin: 0 8px;
+    font-size: 0.9em;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+.graveyard-button {
+    cursor: pointer;
+    border: 1px solid #888;
+    background-color: rgba(200, 200, 200, 0.7);
+}
+.graveyard-button:hover {
+    background-color: rgba(180, 180, 180, 0.9);
+}
+
+.hand .card-count-label {
+    position: absolute;
+    bottom: 2px;
+    right: 5px;
+    font-size: 0.8em;
+    color: #555;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 1px 4px;
+    border-radius: 3px;
+    pointer-events: none; /* Don't interfere with card clicks */
+}
+/* Adjust opponent hand count position if needed */
+#opponent-hand .card-count-label {
+    /* Same position often works okay */
+}
+
+/* State Indicators on Grid Cards */
+.card.on-grid {
+    position: relative; /* Needed for positioning icons */
+}
+
+/* State Indicators on Grid Cards */
+.card.on-grid.has-taunt {
+    border: 2px solid brown !important; /* Thicker brown border for Taunt */
+    box-shadow: 0 0 5px brown; /* Add a glow */
+}
+
+.card.on-grid.is-exhausted {
+    filter: grayscale(60%); /* Desaturate exhausted minions */
+    opacity: 0.8;
+}
+/* Don't apply exhaustion style if it can attack (e.g., Rush minion) */
+.card.on-grid.can-attack.is-exhausted {
+     filter: none;
+     opacity: 1;
+}
+/* --- NEW State Indicators --- */
+.card.on-grid.has-divine-shield {
+    box-shadow: 0 0 8px 2px gold; /* Gold glow */
+    border-color: gold !important;
+    /* Or use an ::after pseudo-element for a bubble effect */
+    position: relative; /* Needed for pseudo-element */
+}
+.card.on-grid.has-divine-shield::after {
+    content: '';
+    position: absolute;
+    top: -5%; left: -5%;
+    width: 110%; height: 110%;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 150, 0.7);
+    box-shadow: inset 0 0 10px rgba(255, 255, 200, 0.5);
+    pointer-events: none;
+    opacity: 0.8;
+    animation: shield-shimmer 2s infinite linear;
+}
+
+.card.on-grid.has-poisonous {
+    border: 2px solid limegreen !important;
+    box-shadow: 0 0 5px limegreen;
+}
+
+/* Shield Pop Animation */
+.card.on-grid.shield-pop {
+    animation: shield-pop-animation 0.3s ease-out forwards;
+}
+
+@keyframes shield-pop-animation {
+    0% { box-shadow: 0 0 8px 2px gold; }
+    50% { box-shadow: 0 0 15px 5px white; transform: scale(1.03); }
+    100% { box-shadow: none; border-color: #333; /* Reset border */ } /* Return to normal border */
+}
+
+/* --- NEW: State Indicator Icons --- */
+.state-indicator {
+    position: absolute;
+    width: 18px; /* Adjust size as needed */
+    height: 18px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 1px black;
+    pointer-events: none; /* Don't block clicks on card */
+    z-index: 2; /* Above art, below potential selection outlines */
+    box-shadow: 0 0 3px rgba(0,0,0,0.5);
+}
+
+/* Positioning Examples (adjust as needed) */
+.indicator-taunt {
+    bottom: 2px;
+    left: 2px;
+    background-color: rgba(139, 69, 19, 0.8); /* Brown */
+    content: 'T'; /* Simple text indicator */
+    /* Or use background-image: url('icons/taunt.svg'); */
+}
+.indicator-divine-shield {
+    top: 2px;
+    right: 2px;
+    background-color: rgba(255, 215, 0, 0.8); /* Gold */
+    content: 'DS';
+     /* Or use background-image: url('icons/shield.svg'); */
+}
+.indicator-poisonous {
+     bottom: 2px;
+     right: 2px;
+     background-color: rgba(50, 205, 50, 0.8); /* Lime green */
+     content: 'P';
+     /* Or use background-image: url('icons/skull.svg'); */
+}
+.indicator-exhausted {
+    top: 2px;
+    left: 2px;
+    background-color: rgba(100, 100, 100, 0.7); /* Gray */
+     content: 'Z'; /* Representing sleep/exhaustion */
+     font-style: italic;
+}
+/* Hide exhaustion icon if the minion can attack (e.g. Rush) */
+.card.on-grid.can-attack .indicator-exhausted {
+    display: none;
+}
+
+/* Add specific content using ::before for text/emoji icons */
+.state-indicator.indicator-taunt::before { content: '🛡️'; font-size: 10px; } /* Shield emoji */
+.state-indicator.indicator-divine-shield::before { content: '✨'; font-size: 10px; } /* Sparkle/bubble emoji */
+.state-indicator.indicator-poisonous::before { content: '☠️'; font-size: 10px;} /* Skull emoji */
+.state-indicator.indicator-exhausted::before { content: '💤'; font-size: 10px; } /* Zzz emoji */
+
+/* --- End State Indicator Icons --- */
+
+/* Graveyard Modal */
+.modal {
+    position: fixed; /* Stay in place */
+    z-index: 200; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 900px; /* Max width */
+    border-radius: 8px;
+    position: relative;
+    max-height: 85vh; /* Limit height */
+    display: flex;
+    flex-direction: column;
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+}
+
+#graveyard-title {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.graveyard-display {
+    /* Use hand styles but allow wrapping and scrolling */
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping */
+    justify-content: flex-start; /* Align items to start */
+    gap: 10px;
+    overflow-y: auto; /* Enable vertical scroll */
+    padding: 10px;
+    background-color: #e0e0e0;
+    min-height: 120px; /* Min height */
+    flex-grow: 1; /* Allow it to take space */
+}
+/* Style cards in graveyard slightly differently if desired */
+.graveyard-display .card {
+    cursor: default; /* Not interactive */
+    /* Maybe slightly smaller? */
+    /* width: 70px; height: 95px; */
+}
+
+
+/* --- End UI/UX Refinements --- */
+
+@keyframes defeat-animation {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+        filter: grayscale(0) brightness(1);
+    }
+    50% {
+        transform: scale(1.05) rotate(3deg);
+        opacity: 0.7;
+        filter: grayscale(50%) brightness(1.1);
+    }
+    100% {
+        transform: scale(0.4) rotate(-8deg);
+        opacity: 0;
+        filter: grayscale(100%) brightness(0.5);
+    }
+}
+
+/* --- Menu Overlays --- */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 300; /* Above game, below modal potentially */
+    color: #333;
+    text-align: center;
+}
+
+.menu-box {
+    background-color: #f0f0f0;
+    padding: 40px 60px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+.menu-box h1 {
+    margin-bottom: 15px;
+    color: #444;
+}
+.menu-box h2 {
+    margin-bottom: 25px;
+    color: #555;
+}
+
+.menu-box p {
+    margin-bottom: 30px;
+    color: #666;
+}
+
+.menu-box button {
+    padding: 12px 25px;
+    font-size: 1.1em;
+    cursor: pointer;
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.menu-box button:hover {
+    background-color: #45a049;
+}
+
+#game-over-menu .menu-box button {
+     background-color: #007bff; /* Blue for play again */
+}
+#game-over-menu .menu-box button:hover {
+     background-color: #0056b3;
+}
+/* --- End Menu Overlays --- */
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) { /* Tablet */
+    .card:not(.on-grid) { width: 70px; height: 95px; font-size: 0.7em; padding: 4px; }
+    .hand { height: 105px; }
+    .battle-grid { gap: 6px; padding: 6px; }
+    .grid-slot { min-width: 70px; min-height: 90px; }
+    .player-info { font-size: 0.85em; }
+}
+@media (max-width: 600px) { /* Mobile */
+    .card:not(.on-grid) { width: 65px; height: 90px; font-size: 0.6em; padding: 3px; }
+    .card:not(.on-grid) .card-header { height: 17%; }
+    .card:not(.on-grid) .card-art { height: 43%; }
+    .card:not(.on-grid) .card-stats { height: 15%; }
+    .card:not(.on-grid) .card-ability { height: 25%; font-size: 0.6em; -webkit-line-clamp: 1; }
+    .hand { height: 100px; gap: 3px; }
+    .battle-grid { gap: 4px; padding: 4px; min-height: 0; }
+    .grid-slot { min-width: 0; min-height: 80px; }
+    .card.on-grid .card-art { width: 45%; margin-right: 1px;}
+    .card.on-grid .card-info-column { width: 55%; font-size: 0.7em;}
+    .card.on-grid .card-name { font-size: 0.8em; -webkit-line-clamp: 1; }
+    .card.on-grid .card-stats { font-size: 1em; height: 55%; }
+    .card.on-grid .card-header-grid { height: 30%; }
+    .player-info { font-size: 0.8em; padding: 4px 8px; }
+    #message-area { font-size: 0.8em; bottom: 3px; padding: 6px 12px; }
+    .state-indicator {
+        width: 14px;
+        height: 14px;
+        font-size: 9px;
+    }
+    .state-indicator.indicator-taunt::before,
+    .state-indicator.indicator-divine-shield::before,
+    .state-indicator.indicator-poisonous::before,
+    .state-indicator.indicator-exhausted::before {
+        font-size: 8px;
+    }
+}
+@media (max-width: 600px) {
+    .menu-box {
+        padding: 25px 30px;
+        width: 90%;
+    }
+    .menu-box h1 { font-size: 1.5em; }
+    .menu-box h2 { font-size: 1.3em; }
+    .menu-box button { font-size: 1em; padding: 10px 20px; }
+
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+     .graveyard-display {
+         gap: 5px;
+     }
+     .graveyard-display .card {
+         width: 65px; /* Match mobile hand card size */
+         height: 90px;
+     }
+     .deck-info, .graveyard-button {
+         font-size: 0.8em;
+         margin: 0 4px;
+         padding: 1px 3px;
+     }
+     .hand .card-count-label {
+         font-size: 0.7em;
+     }
+}
